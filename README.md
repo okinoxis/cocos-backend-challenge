@@ -4,6 +4,16 @@
 
 This project is part of the [COCOS Backend Challenge](https://github.com/cocos-capital/cocos-challenge/blob/main/backend-challenge.md).
 
+### Technologies
+
+- Node.js
+- TypeScript
+- TypeORM
+- Class Validator
+- Express
+- Jest
+- Swagger
+
 ## Installation
 
 To set up this project, follow these steps:
