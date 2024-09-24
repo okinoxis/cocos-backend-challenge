@@ -78,7 +78,7 @@ describe("API Endpoints", () => {
         instrumentId: 47,
         side: "BUY",
         type: "MARKET",
-        quantity: 1
+        quantity: 1,
       };
       const res = await request(app).post("/orders/submit").send(orderData);
       expect(res.status).toBe(200);
@@ -96,7 +96,7 @@ describe("API Endpoints", () => {
         side: "SELL",
         type: "LIMIT",
         quantity: 1,
-        price: "1000"
+        price: "1000",
       };
       const res = await request(app).post("/orders/submit").send(orderData);
       expect(res.status).toBe(200);
@@ -108,13 +108,51 @@ describe("API Endpoints", () => {
       expect(res.body.price).toBe("1000");
     });
 
+    it("should be REJECTED if not enough cash available", async () => {
+      const orderData = {
+        userId: 1,
+        instrumentId: 47,
+        side: "BUY",
+        type: "LIMIT",
+        quantity: 1,
+        price: "999999",
+      };
+      const res = await request(app).post("/orders/submit").send(orderData);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("id");
+      expect(res.body.status).toBe("REJECTED");
+      expect(res.body.side).toBe("BUY");
+      expect(res.body.type).toBe("LIMIT");
+      expect(res.body.quantity).toBe(1);
+      expect(res.body.price).toBe("999999");
+    });
+
+    it("should be REJECTED if not enough shares to sell", async () => {
+      const orderData = {
+        userId: 1,
+        instrumentId: 47,
+        side: "SELL",
+        type: "LIMIT",
+        quantity: 9999,
+        price: "1000",
+      };
+      const res = await request(app).post("/orders/submit").send(orderData);
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("id");
+      expect(res.body.status).toBe("REJECTED");
+      expect(res.body.side).toBe("SELL");
+      expect(res.body.type).toBe("LIMIT");
+      expect(res.body.quantity).toBe(9999);
+      expect(res.body.price).toBe("1000");
+    });
+
     it("should return 400 for invalid order data", async () => {
       const invalidOrderData = {
         userId: 1,
         instrumentId: 47,
         side: "INVALID",
         type: "MARKET",
-        quantity: 10
+        quantity: 10,
       };
       const res = await request(app)
         .post("/orders/submit")
@@ -132,7 +170,7 @@ describe("API Endpoints", () => {
         side: "SELL",
         type: "LIMIT",
         quantity: 1,
-        price: "1100"
+        price: "1100",
       };
       const submitRes = await request(app)
         .post("/orders/submit")
@@ -158,7 +196,7 @@ describe("API Endpoints", () => {
         instrumentId: 47,
         side: "BUY",
         type: "MARKET",
-        quantity: 1
+        quantity: 1,
       };
       const submitRes = await request(app)
         .post("/orders/submit")
