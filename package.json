@@ -35,7 +35,6 @@
     "dev": "nodemon build/index.js",
     "start:dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
     "test": "jest",
-    "test:watch": "jest --watch",
     "build": "tsc",
     "start": "ts-node src/index.ts",
     "migration": " npm run typeorm migration:run -- -d ./src/data-source.ts",
