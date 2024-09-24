@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is part of the COCOS Backend Challenge.
+This project is part of the [COCOS Backend Challenge](https://github.com/cocos-capital/cocos-challenge/blob/main/backend-challenge.md).
 
 ## Installation
 
