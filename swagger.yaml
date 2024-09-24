@@ -1,0 +1,240 @@
+openapi: 3.0.0
+info:
+  title: COCOS Backend Challenge
+  description: API for managing portfolios, searching assets, and submitting/cancelling orders
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /portfolio/{userId}:
+    get:
+      summary: Get user portfolio
+      description: Retrieve the portfolio information for a specific user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user whose portfolio to retrieve
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioDto"
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error
+
+  /assets/search:
+    get:
+      summary: Search assets
+      description: Search for assets by ticker or name with pagination
+      parameters:
+        - in: query
+          name: ticker
+          schema:
+            type: string
+          description: The ticker symbol to search for (partial match, case-insensitive)
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: The name of the instrument to search for (partial match, case-insensitive)
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: The page number to retrieve
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: The number of items per page
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssetSearchResultDto"
+        "400":
+          description: Invalid search parameters
+        "500":
+          description: Internal server error
+
+  /orders/submit:
+    post:
+      summary: Submit an order
+      description: Submit a new order (market or limit)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitOrderDto"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponseDto"
+        "400":
+          description: Invalid order data
+        "500":
+          description: Internal server error
+
+  /orders/cancel:
+    post:
+      summary: Cancel an order
+      description: Cancel an existing order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelOrderDto"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponseDto"
+        "400":
+          description: Invalid cancellation request or order cannot be cancelled
+        "404":
+          description: Order not found
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    PortfolioDto:
+      type: object
+      properties:
+        totalAccountValue:
+          type: number
+        availableCash:
+          type: number
+        positions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PortfolioPositionDto"
+
+    PortfolioPositionDto:
+      type: object
+      properties:
+        instrumentId:
+          type: integer
+        ticker:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: number
+        totalValue:
+          type: number
+        totalReturn:
+          type: number
+
+    AssetDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticker:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+
+    AssetSearchResultDto:
+      type: object
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssetDto"
+        totalCount:
+          type: integer
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+
+    SubmitOrderDto:
+      type: object
+      required:
+        - userId
+        - instrumentId
+        - side
+        - type
+        - quantity
+      properties:
+        userId:
+          type: integer
+          example: 1
+        instrumentId:
+          type: integer
+          example: 47
+        side:
+          type: string
+          enum: [BUY, SELL]
+          example: BUY
+        type:
+          type: string
+          enum: [MARKET, LIMIT]
+          example: MARKET
+        quantity:
+          type: number
+          example: 10
+        price:
+          type: string
+          example: "925.85"
+
+    CancelOrderDto:
+      type: object
+      required:
+        - orderId
+      properties:
+        orderId:
+          type: integer
+
+    OrderResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        instrumentId:
+          type: integer
+        side:
+          type: string
+          enum: [BUY, SELL, CASH_IN, CASH_OUT]
+        type:
+          type: string
+          enum: [MARKET, LIMIT]
+        quantity:
+          type: number
+        price:
+          type: number
+        status:
+          type: string
+          enum: [NEW, FILLED, REJECTED, CANCELLED]
+        datetime:
+          type: string
+          format: date-time
