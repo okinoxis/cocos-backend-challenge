@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/f6e20e6f-6b17-4419-8b4a-72e0b6407a10)# COCOS Backend Challenge
+# COCOS Backend Challenge
 
 ## Overview
 
