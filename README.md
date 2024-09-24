@@ -1,4 +1,4 @@
-# COCOS Backend Challenge
+![image](https://github.com/user-attachments/assets/f6e20e6f-6b17-4419-8b4a-72e0b6407a10)# COCOS Backend Challenge
 
 ## Overview
 
@@ -66,7 +66,7 @@ To run the tests, use the following command:
 ```bash
 npm test
 ```
-![image](https://github.com/user-attachments/assets/504bb90f-afd5-45e6-884c-71145a1da892)
+![image](https://github.com/user-attachments/assets/287fc4a5-4acb-4b05-89c8-24221962bfa7)
 
 ## Routes
 
