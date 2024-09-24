@@ -66,6 +66,7 @@ To run the tests, use the following command:
 ```bash
 npm test
 ```
+![image](https://github.com/user-attachments/assets/504bb90f-afd5-45e6-884c-71145a1da892)
 
 ## Routes
 
